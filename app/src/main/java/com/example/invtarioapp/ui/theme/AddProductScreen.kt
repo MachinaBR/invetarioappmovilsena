@@ -12,11 +12,14 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.invtarioapp.Product
-import com.example.invtarioapp.ProductViewModel
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddProductScreen(navController: NavHostController, viewModel: ProductViewModel) {
+fun AddProductScreen(
+    navController: NavHostController,
+    viewModel: ProductViewModel
+) {
     var nombre = remember { mutableStateOf(TextFieldValue("")) }
     var categoria = remember { mutableStateOf(TextFieldValue("")) }
     var cantidad = remember { mutableStateOf(TextFieldValue("")) }
@@ -36,7 +39,6 @@ fun AddProductScreen(navController: NavHostController, viewModel: ProductViewMod
         Text(text = "Agregar Producto", color = Color.White)
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Campos personalizados
         BasicTextFieldPersonalizado(nombre, "Nombre del Producto")
         BasicTextFieldPersonalizado(categoria, "Categoría")
         BasicTextFieldPersonalizado(cantidad, "Cantidad")
@@ -45,15 +47,11 @@ fun AddProductScreen(navController: NavHostController, viewModel: ProductViewMod
 
         if (errorMensaje.isNotEmpty()) {
             Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = errorMensaje,
-                color = Color.Red
-            )
+            Text(text = errorMensaje, color = Color.Red)
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Botón Guardar
         Button(
             onClick = {
                 if (
@@ -63,7 +61,6 @@ fun AddProductScreen(navController: NavHostController, viewModel: ProductViewMod
                     precio.value.text.isNotBlank() &&
                     proveedor.value.text.isNotBlank()
                 ) {
-                    // Guardar producto
                     val nuevoProducto = Product(
                         id = (0..1000).random(),
                         nombre = nombre.value.text,
@@ -73,8 +70,8 @@ fun AddProductScreen(navController: NavHostController, viewModel: ProductViewMod
                         proveedor = proveedor.value.text,
                         imagenUri = null
                     )
-                    viewModel.agregarProducto(nuevoProducto)
-                    navController.popBackStack() // Volver al listado
+                    viewModel.guardarProducto(nuevoProducto)
+                    navController.popBackStack()
                 } else {
                     errorMensaje = "⚠️ Todos los campos son obligatorios."
                 }
@@ -87,7 +84,6 @@ fun AddProductScreen(navController: NavHostController, viewModel: ProductViewMod
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Botón Cancelar
         Button(
             onClick = { navController.popBackStack() },
             modifier = Modifier.fillMaxWidth(),

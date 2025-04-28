@@ -1,17 +1,52 @@
-package com.example.invtarioapp
+package com.example.invtarioapp.ui.theme
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.invtarioapp.Product // <-- corregido aquí
+import com.example.invtarioapp.repository.ProductRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class ProductViewModel : ViewModel() {
-    var productos = mutableStateListOf<Product>()
-        private set
+    private val repository = ProductRepository()
 
-    fun agregarProducto(producto: Product) {
-        productos.add(producto)
+    private val _productos = MutableStateFlow<List<Product>>(emptyList())
+    val productos: StateFlow<List<Product>> = _productos
+
+    init {
+        cargarProductos()
     }
 
-    fun eliminarProducto(producto: Product) {
-        productos.remove(producto)
+    fun cargarProductos() {
+        viewModelScope.launch {
+            try {
+                _productos.value = repository.obtenerProductos()
+            } catch(e:Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun guardarProducto(producto: Product) {
+        viewModelScope.launch {
+            try {
+                repository.guardarProducto(producto)
+                cargarProductos()
+            } catch(e:Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun eliminarProducto(id: Int) {
+        viewModelScope.launch {
+            try {
+                repository.eliminarProducto(id)
+                cargarProductos()
+            } catch(e:Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 }
