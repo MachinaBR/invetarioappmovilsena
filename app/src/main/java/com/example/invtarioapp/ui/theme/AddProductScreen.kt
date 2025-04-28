@@ -62,7 +62,7 @@ fun AddProductScreen(
                     proveedor.value.text.isNotBlank()
                 ) {
                     val nuevoProducto = Product(
-                        id = (0..1000).random(),
+                        id = 0,
                         nombre = nombre.value.text,
                         categoria = categoria.value.text,
                         cantidad = cantidad.value.text.toIntOrNull() ?: 0,
